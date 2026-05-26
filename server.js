@@ -201,15 +201,36 @@ app.use((req, res, next) => {
   return next();
 });
 
-(async () => {
-  try {
-    await initializeDatabase();
-    console.log('Database initialized successfully.');
-  } catch (err) {
-    console.error('Error initializing database:', err);
+// Lazy database initialization middleware for serverless environment support
+let dbInitialized = false;
+async function ensureDbInitialized(req, res, next) {
+  if (!dbInitialized) {
+    try {
+      await initializeDatabase();
+      dbInitialized = true;
+    } catch (err) {
+      console.error('Lazy DB initialization error:', err);
+    }
   }
+  next();
+}
 
-  app.listen(port, () => {
-    console.log(`HijabBilling backend running at http://localhost:${port}`);
-  });
-})();
+app.use('/api', ensureDbInitialized);
+
+if (!process.env.VERCEL) {
+  (async () => {
+    try {
+      await initializeDatabase();
+      dbInitialized = true;
+      console.log('Database initialized successfully.');
+    } catch (err) {
+      console.error('Error initializing database:', err);
+    }
+
+    app.listen(port, () => {
+      console.log(`HijabBilling backend running at http://localhost:${port}`);
+    });
+  })();
+}
+
+module.exports = app;
