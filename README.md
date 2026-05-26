@@ -1,6 +1,6 @@
 # HijabBilling
 
-Simple HijabBilling app with Express backend and SQLite persistence using `sql.js`.
+Simple HijabBilling app with Express backend and PostgreSQL persistence (Neon).
 
 ## Local development
 
@@ -40,6 +40,6 @@ Any platform that supports Docker containers can run this app. Upload the reposi
 
 ### Notes
 
-- The app uses a local SQLite file (`orders.db`) for persistence.
-- Container or cloud filesystem may be ephemeral; if you need durable storage, migrate to a managed database.
+- The app uses PostgreSQL for durable persistence, configured via the `DATABASE_URL` environment variable.
+- For local development, create a `.env` file based on `.env.example` to supply the local database connection string.
 - The server listens on `process.env.PORT || 3000`.
