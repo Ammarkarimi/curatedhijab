@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HijabBilling - Sales & Profit Tracker</title>
+    
+    <!-- Meta tags for SEO & App Info -->
+    <meta name="description" content="A premium, simple, and powerful online sales, cost, profit, and delivery tracker for your e-commerce business.">
+    <meta name="theme-color" content="#0f172a">
+    
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- External stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Chart.js and Lucide Icons CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="login-screen" id="login-screen">
+        <div class="login-card glass">
+            <div class="login-card-header">
+                <h2>Login to HijabBilling</h2>
+                <p>Enter your username and password to continue.</p>
+            </div>
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" autocomplete="username" required placeholder="Username">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" autocomplete="current-password" required placeholder="Password">
+                </div>
+                <div class="login-actions">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+                <p class="login-error hidden" id="login-error">Invalid username or password.</p>
+            </form>
+        </div>
+    </div>
+
+    <div id="app-container" class="app-container hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-logo">
+                <div class="logo-icon">
+                    <i data-lucide="trending-up"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Hijab<span>Billing</span></h1>
+                    <p class="subtitle">E-Commerce Tracker</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <div class="currency-selector">
+                    <label for="currency-select"><i data-lucide="globe"></i></label>
+                    <select id="currency-select">
+                        <option value="₹">INR (₹)</option>
+                        <option value="$">USD ($)</option>
+                        <option value="€">EUR (€)</option>
+                        <option value="£">GBP (£)</option>
+                        <option value="AED">AED (د.إ)</option>
+                    </select>
+                </div>
+                
+                <button id="import-btn" class="btn btn-secondary" title="Import Data">
+                    <i data-lucide="upload"></i>
+                    <span>Import</span>
+                </button>
+                
+                <button id="export-btn" class="btn btn-secondary" title="Export to CSV">
+                    <i data-lucide="download"></i>
+                    <span>Export CSV</span>
+                </button>
+                
+                <button id="backup-btn" class="btn btn-secondary" title="Backup JSON">
+                    <i data-lucide="database"></i>
+                    <span>Backup JSON</span>
+                </button>
+                
+                <button id="new-order-btn" class="btn btn-primary">
+                    <i data-lucide="plus-circle"></i>
+                    <span>New Order</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- KPI Grid -->
+        <section class="kpi-grid">
+            <div class="kpi-card glass" id="kpi-revenue">
+                <div class="kpi-content">
+                    <p class="kpi-label">Total Revenue</p>
+                    <h3 class="kpi-value" id="val-revenue">0.00</h3>
+                </div>
+                <div class="kpi-icon icon-revenue">
+                    <i data-lucide="dollar-sign"></i>
+                </div>
+            </div>
+            
+            <div class="kpi-card glass" id="kpi-cost">
+                <div class="kpi-content">
+                    <p class="kpi-label">Total Cost</p>
+                    <h3 class="kpi-value" id="val-cost">0.00</h3>
+                </div>
+                <div class="kpi-icon icon-cost">
+                    <i data-lucide="shopping-bag"></i>
+                </div>
+            </div>
+
+            <div class="kpi-card glass" id="kpi-profit">
+                <div class="kpi-content">
+                    <p class="kpi-label">Net Profit</p>
+                    <h3 class="kpi-value" id="val-profit">0.00</h3>
+                </div>
+                <div class="kpi-icon icon-profit">
+                    <i data-lucide="award"></i>
+                </div>
+            </div>
+
+            <div class="kpi-card glass" id="kpi-margin">
+                <div class="kpi-content">
+                    <p class="kpi-label">Net Margin</p>
+                    <h3 class="kpi-value" id="val-margin">0%</h3>
+                </div>
+                <div class="kpi-icon icon-margin">
+                    <i data-lucide="percent"></i>
+                </div>
+            </div>
+
+            <div class="kpi-card glass" id="kpi-delivery">
+                <div class="kpi-content">
+                    <p class="kpi-label">Delivery Success</p>
+                    <h3 class="kpi-value" id="val-delivery">0%</h3>
+                </div>
+                <div class="kpi-icon icon-delivery">
+                    <i data-lucide="truck"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- Charts Section -->
+            <section class="charts-section">
+                <div class="chart-card glass">
+                    <div class="chart-header">
+                        <h4>Monthly Income & Cost Trend</h4>
+                        <div class="chart-legend"></div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card glass narrow">
+                    <div class="chart-header">
+                        <h4>Delivery Status Breakdown</h4>
+                    </div>
+                    <div class="chart-container doughnut">
+                        <canvas id="deliveryChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Table & Controls Section -->
+            <section class="data-section glass">
+                <div class="controls-bar">
+                    <div class="search-box">
+                        <i data-lucide="search"></i>
+                        <input type="text" id="search-input" placeholder="Search orders, products, customers...">
+                    </div>
+                    
+                    <div class="filters-group">
+                        <div class="filter-item">
+                            <label for="filter-status">Status</label>
+                            <select id="filter-status">
+                                <option value="all">All Statuses</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Shipped">Shipped</option>
+                                <option value="Delivered">Delivered</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-item">
+                            <label for="sort-by">Sort By</label>
+                            <select id="sort-by">
+                                <option value="date-desc">Newest First</option>
+                                <option value="date-asc">Oldest First</option>
+                                <option value="profit-desc">Highest Profit</option>
+                                <option value="revenue-desc">Highest Sale</option>
+                                <option value="name-asc">Product Name (A-Z)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table View -->
+                <div class="table-container">
+                    <table class="orders-table" id="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Order Details</th>
+                                <th>Customer Info</th>
+                                <th>Buying Cost</th>
+                                <th>Selling Price</th>
+                                <th>Calculated Profit</th>
+                                <th>Status</th>
+                                <th>Order Date</th>
+                                <th>Delivery Date</th>
+                                <th class="text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-tbody">
+                            <!-- Injected by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state hidden" id="empty-state">
+                    <div class="empty-icon">
+                        <i data-lucide="inbox"></i>
+                    </div>
+                    <h3>No orders found</h3>
+                    <p>Start recording your sales by clicking the "New Order" button above.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add / Edit Modal -->
+    <div class="modal-overlay hidden" id="order-modal">
+        <div class="modal-container glass">
+            <div class="modal-header">
+                <h3 id="modal-title">New Order Details</h3>
+                <button class="modal-close" id="modal-close-btn">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            
+            <form id="order-form" class="modal-form">
+                <input type="hidden" id="order-id">
+                
+                <div class="form-grid">
+                    <div class="form-group span-2">
+                        <label for="product-name">Product Name / Details *</label>
+                        <input type="text" id="product-name" required placeholder="e.g. Premium Silk Hijab - Black">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="customer-name">Customer Name</label>
+                        <input type="text" id="customer-name" placeholder="e.g. Aisha Khan">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="customer-contact">Customer Contact</label>
+                        <input type="text" id="customer-contact" placeholder="e.g. +91 98765 43210">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="buying-price">Buying Cost *</label>
+                        <div class="input-currency-wrapper">
+                            <span class="input-currency-symbol">₹</span>
+                            <input type="number" id="buying-price" step="0.01" min="0" required placeholder="0.00">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="selling-price">Selling Price *</label>
+                        <div class="input-currency-wrapper">
+                            <span class="input-currency-symbol">₹</span>
+                            <input type="number" id="selling-price" step="0.01" min="0" required placeholder="0.00">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="order-status">Delivery Status</label>
+                        <select id="order-status">
+                            <option value="Pending">Pending</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="order-date">Order Date *</label>
+                        <input type="date" id="order-date" required>
+                    </div>
+
+                    <div class="form-group span-2" id="delivery-date-group">
+                        <label for="delivery-date">Delivery Date</label>
+                        <input type="datetime-local" id="delivery-date">
+                        <span class="help-text">Auto-recorded when marked "Delivered", but editable.</span>
+                    </div>
+
+                    <div class="form-group span-2">
+                        <label for="notes">Notes / Custom Tracking Details</label>
+                        <textarea id="notes" rows="3" placeholder="Add tracking codes, shipping agent, or customer requests..."></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hidden Backup / Import File Input -->
+    <input type="file" id="import-file" class="hidden" accept=".json,.csv">
+    <script src="app.js"></script>
+</body>
+</html>
