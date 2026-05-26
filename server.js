@@ -1,12 +1,11 @@
 const path = require('path');
+const dbPath = path.join("/tmp", "orders.db");
 const fs = require('fs');
 const express = require('express');
 const initSqlJs = require('sql.js');
 
 const app = express();
 const port = process.env.PORT || 3000;
-// const dbPath = path.join(__dirname, 'orders.db');
-const dbFile = path.join("/tmp", "orders.db");
 let db;
 
 const AUTH_USERNAME = 'ZaeemZahra';
