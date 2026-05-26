@@ -905,7 +905,7 @@ body {
     .orders-table tbody tr {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 0.75rem;
+        gap: 0.75rem 1.2rem;
         padding: 1.2rem;
         border: 1px solid var(--card-border);
         border-radius: var(--border-radius-md);
@@ -974,31 +974,186 @@ body {
 
 @media (max-width: 600px) {
     .app-container {
-        padding: 1rem;
+        padding: 0.85rem;
+        gap: 1.2rem;
     }
     
     .app-header {
         flex-direction: column;
         align-items: stretch;
         gap: 1rem;
+        padding: 1.2rem 1rem;
     }
 
     .header-actions {
         width: 100%;
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.6rem;
     }
 
     .header-actions .currency-selector {
-        grid-column: span 2;
+        grid-column: span 3;
+        width: 100%;
         justify-content: center;
+    }
+
+    #import-btn, #export-btn, #backup-btn {
+        padding: 0.6rem 0.4rem;
+        font-size: 0.85rem;
+    }
+
+    #import-btn span, #export-btn span, #backup-btn span {
+        display: none; /* Hide text, show only icons for utility buttons */
+    }
+
+    #new-order-btn {
+        grid-column: span 3;
+        width: 100%;
+        padding: 0.75rem;
+    }
+
+    /* KPI Grid - 2 columns, delivery spans full width */
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    .kpi-card {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .kpi-card .kpi-icon {
+        align-self: flex-end;
+        width: 36px;
+        height: 36px;
+        margin-top: -6px;
+    }
+
+    .kpi-value {
+        font-size: 1.35rem;
+    }
+
+    #kpi-delivery {
+        grid-column: span 2;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    #kpi-delivery .kpi-icon {
+        align-self: center;
+        margin-top: 0;
+    }
+
+    /* Charts sizing */
+    .chart-card {
+        padding: 1rem;
+        min-height: 320px;
+    }
+
+    .chart-container {
+        height: 240px;
+    }
+
+    /* Table cards list view */
+    .orders-table tbody tr {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        padding: 1rem;
+    }
+
+    .orders-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+        padding-bottom: 0.4rem;
+    }
+
+    .orders-table td:last-child,
+    .orders-table td.actions-cell {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .orders-table td::before {
+        display: inline-block;
+        margin-bottom: 0;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+    }
+
+    .orders-table td.span-full {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding-bottom: 0.6rem;
+    }
+
+    .orders-table td.span-full::before {
+        margin-bottom: 0.1rem;
+    }
+
+    .orders-table td.span-full .product-cell {
+        width: 100%;
+    }
+
+    .orders-table td.actions-cell {
+        justify-content: flex-end;
+        gap: 0.6rem;
+    }
+
+    .orders-table td.actions-cell::before {
+        display: none;
+    }
+
+    /* Modal dialog */
+    .modal-container {
+        max-width: 100%;
+        border-radius: var(--border-radius-md);
+    }
+
+    .modal-form {
+        padding: 1rem;
     }
 
     .form-grid {
         grid-template-columns: 1fr;
+        gap: 0.8rem;
     }
 
     .form-group.span-2 {
         grid-column: span 1;
+    }
+
+    .modal-header {
+        padding: 1rem;
+    }
+
+    .modal-footer {
+        padding-top: 0.75rem;
+        margin-top: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .filters-group {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    
+    .filter-item {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
     }
 }
